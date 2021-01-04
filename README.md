@@ -1,4 +1,4 @@
-# Dartbuster
+# Dartcrawler
 **Author:** Gray
 
 **License:** [MIT License](#License "MIT License")
@@ -30,20 +30,19 @@ $ dart2native ./bin/dartcrawler.dart -o bin/dartcrawler
 
 ## Features
 - Real time scan progress and information
-- 10 built in wordlists
-- 4 built in extension lists
 - Built in user agents
 - Rotates user agent per request (optional)
-- Supports custom wordlists, extensions, and user agents
-- Multithreaded and option to specify threadcount
-- Specify Delay
+- Specify delay
+- Specify timeout
+- Scans all urls present on a page
+- Same and multi-domain support
 - Supports output files
-- Option to hide or show 404 responses
+- Supports exclusions
 - Specify custom cookies
-- Automatically skips common fuzzing traps such as endless redirects and optionally prints to screen
+- Automatically skips common webserver traps such as endless redirects and optionally prints to screen
 - Pre and post scan report
 - Fully cross platform
-- Asynchronous by nature so multiple requests will occur concurrently on a single thread.
+- Asynchronous by nature so multiple requests will occur concurrently on a single thread
 
 ## Usage
 ***The help screen has all the information you'd need, but here are some hopefully useful examples:***
@@ -51,26 +50,22 @@ $ dart2native ./bin/dartcrawler.dart -o bin/dartcrawler
 
 ```py
 # Prints help screen
-$ dartbuster -h
+$ dartcrawler -h
 
-# Starts fuzzing the "example.com" website, with 50 threads using wordlist apache-user-enum-1.0.txt
-$ dartbuster scan -u https://example.com -T 50 -w apache-user-enum-1.0.txt
+# Starts crawling the "example.com" website, with 2 cookies user, and pass
+$ dartcrawler scan -u https://example.com -c user=member;pass=default
 
-# Starts fuzzing the "example.com" website, with the extensions .pdf, .html, .css
-$ dartbuster scan -u https://example.com -e .pdf,.html,.css
+# Starts crawling the "example.com" website, with the exclusions .png, .jpeg, .jpg
+$ dartcrawler scan -u https://example.com -e .png,.jpeg,.jpg
 
-# Prints built in extension and word lists.
-$ dartbuster list
-
-# Prints built in useragents.
-$ dartbuster useragents
+# Prints built in useragents
+$ dartcrawler useragents
 ```
 
 ## Todo List
-- Add recursion for directories.
-- Add exclusion flags.
 - Possibly stop get requests where the fetched content exceeds a certain size, ie: if webserver starts an endless file stream.
 - Implement isolates 2.
+- Implement in progress \r message like in buster.
 
 
 ## License
