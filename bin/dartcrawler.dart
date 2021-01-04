@@ -514,12 +514,8 @@ void main(List<String> arguments) async {
     .transform(utf8.decoder)
     .transform(LineSplitter())
     .forEach((l) {
-      final i = l.split(', ');
-      try {
-        print('${c.g}[+]${c._} ${i[0] ?? '              NULL              '}  ${i[1].toString().padRight(11)}  ${i[2].toString().padRight(14)}  ${i[3].toString().padRight(12)}  ${i[4]}');
-      } catch (e) {
-        print('${c.r}[-]${c._} Please report this, (l=$l), e=$e');
-      }
+      var i = l.split(', ');
+      print('${c.r}[-]${c._} Please report this, (l=$l), e=$e');
     });
   
   if (output !=null) {
