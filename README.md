@@ -66,6 +66,7 @@ $ dartcrawler useragents
 - Possibly stop get requests where the fetched content exceeds a certain size, ie: if webserver starts an endless file stream.
 - Implement isolates 2.
 - Implement in progress \r message like in buster.
+- Compare hashes from non-volatile memory for cases where memory consumption goes over the amount allocated to the program.
 
 
 ## License
