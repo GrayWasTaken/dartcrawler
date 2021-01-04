@@ -336,7 +336,7 @@ Future<void> scanUrl() async {
   // Output results
   scanned.add(hash);
 
-  await File('.scan-in-progress').writeAsString('$hash, ${r.statusCode}, ${r.contentLength}, ${r.headers['content-type']}, $url\n', mode: FileMode.append);
+  await File('.scan-in-progress').writeAsStringSync('$hash, ${r.statusCode}, ${r.contentLength}, ${r.headers['content-type']}, $url\n', mode: FileMode.append);
 
   // print stats
   if (error_occured == false) {
@@ -515,7 +515,7 @@ void main(List<String> arguments) async {
     .transform(LineSplitter())
     .forEach((l) {
       var i = l.split(', ');
-      print('${c.r}[-]${c._} Please report this, (l=$l), e=$e');
+      print('${c.g}[+]${c._} ${i[0] ?? '              NULL              '}  ${i[1].toString().padRight(11)}  ${i[2].toString().padRight(14)}  ${i[3].toString().padRight(12)}  ${i[4]}');
     });
   
   if (output !=null) {
