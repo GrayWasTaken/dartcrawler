@@ -25,8 +25,7 @@ $ dart2native ./bin/dartcrawler.dart -o bin/dartcrawler
 ![1](https://lambda.black/assets/portfolio/dartcrawler/1.png "Help Screen")
 ![2](https://lambda.black/assets/portfolio/dartcrawler/2.png "Scan in progress")
 ![3](https://lambda.black/assets/portfolio/dartcrawler/3.png "Scan completion")
-![4](https://lambda.black/assets/portfolio/dartcrawler/4.png "Word and extension lists")
-![6](https://lambda.black/assets/portfolio/dartcrawler/5.png "User agents list")
+![4](https://lambda.black/assets/portfolio/dartcrawler/4.png "User agents list")
 
 ## Features
 - Real time scan progress and information
