@@ -224,7 +224,6 @@ _  /_/ // /_/ /_  /   / /_      / /___  _  /   / /_/ /__ |/ |/ /_  / /  __/  /
 
 Future<void> scanUrl(url) async {
   var r;
-  var error_occured = false;
   var hash;
   if (user_agent == 'rotate') {
     headers['User-Agent'] = user_agents[Random().nextInt(user_agents.length)];
@@ -254,7 +253,7 @@ Future<void> scanUrl(url) async {
   var size = r.headers['content-length'] == null ? 0 : int.parse(r.headers['content-length']);
   if (size > 1000000) {
     error('exceeded 1mb, skipping. (size=${c.p}$size${c._})');
-    error_occured = true;
+    return;
   } else {
     try {
       r = await http.get(url, headers: headers).timeout(Duration(seconds: timeout));
@@ -269,7 +268,7 @@ Future<void> scanUrl(url) async {
   for (var s in scanned) {
     if (hash == s && hash != null) {
       error('duplicate, skipping. (hash=${c.p}$hash${c._})');
-      error_occured = true;
+      return;
     }    
   }
   // if url contains any exclusions skip
@@ -277,7 +276,7 @@ Future<void> scanUrl(url) async {
     for (var e in exclusions) {
       if (url.contains(e)) {
         error('contains exclusion(s), skipping. (exclusion=${c.p}$e${c._})');
-        error_occured = true;
+        return;
       }
     }
   }
@@ -287,39 +286,37 @@ Future<void> scanUrl(url) async {
     r.body.toString();
   } catch (e) {
     error(e);
-    error_occured = true;
+    return;
   }
 
 
   //// Analyze content ////
   /// make sure no error
   /// make sure if domain_only is on that the domain is in the url
-  if (error_occured == false) {
-    if (all_domains || url.contains(domain)) {
-      // get all pure urls
-      var re = RegExp(r'(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?');
-        re.allMatches(r.body).forEach((match) {
-          queue.add(match.group(0));
-        });
-      // get all href and src urls
-      re = RegExp("(?:src|href)=[\'\"](.*?)[\'\"]");
+  if (all_domains || url.contains(domain)) {
+    // get all pure urls
+    var re = RegExp(r'(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?');
       re.allMatches(r.body).forEach((match) {
-        var u = match.group(1);
-        if (u.length == 0) {
-          // skip as invalid url
-        } else if (u.substring(0,1) == '/') {
-          queue.add('$protocol://$domain$u');
-        } else if (u.length > 7) {
-          if (u.substring(0,8) == 'https://' || u.substring(0,7) == 'http://') {
-            // skip as previous regex already caught it
-          }
-        } else {
-          queue.add('${url}$u');
-        }
+        queue.add(match.group(0));
       });
-      // remove duplicates
-      queue = queue.toSet().toList();
-    }
+    // get all href and src urls
+    re = RegExp("(?:src|href)=[\'\"](.*?)[\'\"]");
+    re.allMatches(r.body).forEach((match) {
+      var u = match.group(1);
+      if (u.length == 0) {
+        // skip as invalid url
+      } else if (u.substring(0,1) == '/') {
+        queue.add('$protocol://$domain$u');
+      } else if (u.length > 7) {
+        if (u.substring(0,8) == 'https://' || u.substring(0,7) == 'http://') {
+          // skip as previous regex already caught it
+        }
+      } else {
+        queue.add('${url}$u');
+      }
+    });
+    // remove duplicates
+    queue = queue.toSet().toList();
   }
 
   // Output results
@@ -328,9 +325,7 @@ Future<void> scanUrl(url) async {
   await File('.scan-in-progress').writeAsStringSync('$hash, ${r.statusCode}, ${r.contentLength}, ${r.headers['content-type']}, $url\n', mode: FileMode.append);
 
   // print stats
-  if (error_occured == false) {
-    print('${c.g}[+]${c._} Q: ${queue.length.toString().padLeft(4)}, P: ${processing.length.toString().padLeft(4)}, S: ${scanned.length.toString().padLeft(4)} ${c.b}$url${c._}');
-  }
+  print('${c.g}[+]${c._} Q: ${queue.length.toString().padLeft(4)}, P: ${processing.length.toString().padLeft(4)}, S: ${scanned.length.toString().padLeft(4)} ${c.b}$url${c._}');
   processing.remove(url);
 }
 
