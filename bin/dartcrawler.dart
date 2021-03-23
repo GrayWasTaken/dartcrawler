@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'user-agents.dart';
 
 // Main
-const version = '1.0.0';
+const version = '1.0.1';
 
 
 
@@ -222,8 +222,7 @@ _  /_/ // /_/ /_  /   / /_      / /___  _  /   / /_/ /__ |/ |/ /_  / /  __/  /
 
 
 
-Future<void> scanUrl() async {
-  var url;
+Future<void> scanUrl(url) async {
   var r;
   var error_occured = false;
   var hash;
@@ -237,17 +236,7 @@ Future<void> scanUrl() async {
     }
     processing.remove(url);
   }
-
-
-
-  try {
-    url = queue[0];
-  } catch (e) {
-    return;
-  }
-  queue.remove(url);
   processing.add(url);
-  // print('${c.o}[*]${c._} Trying $url');
 
   // delay
   if (delay > 0) {
@@ -493,7 +482,7 @@ void main(List<String> arguments) async {
   while (queue.isNotEmpty && processing.isNotEmpty) {
     await Future.wait([
       for (var i = 0; i < queue.length; i++)
-        scanUrl()
+        scanUrl(queue.removeAt(0))
     ]);
   }
   print(c.g+'='*75);
